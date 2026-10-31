@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://giovannaswishlist.com/sitemap.xml
