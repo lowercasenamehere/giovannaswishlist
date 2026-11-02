@@ -50,7 +50,7 @@ function initCart(gifts){
  for(const id of selected)if(!gifts.some(g=>g.id===id))selected.delete(id);
  document.querySelectorAll('#gift-grid .card').forEach(card=>{const g=gifts.find(g=>g.id===card.dataset.giftId);if(!g)return;card.querySelector('.cart-add')?.remove();const b=document.createElement('button');b.type='button';b.className='cart-add';b.onclick=()=>{selected.has(g.id)?selected.delete(g.id):selected.add(g.id);render();};card.querySelector('.body').append(b);buttons.set(g.id,b);});
  total.textContent=money(gifts.reduce((n,g)=>n+(known(g)?g.price:0),0))+' total';
- summary.querySelectorAll('small').forEach(n=>n.remove());if(gifts.some(g=>g.options?.length)){const note=document.createElement('small');note.textContent='First choices only · alternatives excluded';summary.append(note);}if(gifts.some(g=>!known(g))){const note=document.createElement('small');note.textContent='Excludes gifts with prices TBD';summary.append(note);}
+ summary.querySelectorAll('small').forEach(n=>n.remove());if(gifts.some(g=>!known(g))){const note=document.createElement('small');note.textContent='Excludes gifts with prices TBD';summary.append(note);}
  render();
  }
  document.addEventListener('wishlist-option-change',render);
