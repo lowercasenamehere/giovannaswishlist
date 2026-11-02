@@ -12,9 +12,9 @@ function initCart(gifts){
  function render(){
   try{localStorage.setItem('giovanna-wishlist-cart',JSON.stringify([...selected]));}catch{}
   open.textContent='Cart ('+selected.size+')';items.replaceChildren();let subtotal=0,unknown=0;
-  for(const g of gifts){const on=selected.has(g.id);const b=buttons.get(g.id);if(b){b.textContent=on?'Added to cart ✓':'Add to cart';b.setAttribute('aria-pressed',String(on));}if(!on)continue;
+  for(const original of gifts){const g=original.choice||original;const on=selected.has(original.id);const b=buttons.get(original.id);if(b){b.textContent=on?'Added to cart ✓':'Add to cart';b.setAttribute('aria-pressed',String(on));}if(!on)continue;
    if(known(g))subtotal+=g.price;else unknown++;
-   const row=document.createElement('div');row.className='cart-item';const info=document.createElement('div');const name=document.createElement('a');name.textContent=g.name;if(/^https?:\/\//.test(g.url)){name.href=g.url;name.target='_blank';name.rel='noopener noreferrer';}const price=document.createElement('span');price.textContent=known(g)?money(g.price):'Price TBD';info.append(name,price);const remove=document.createElement('button');remove.textContent='Remove';remove.setAttribute('aria-label','Remove '+g.name+' from cart');remove.onclick=()=>{selected.delete(g.id);render();};row.append(info,remove);items.append(row);
+   const row=document.createElement('div');row.className='cart-item';const info=document.createElement('div');const name=document.createElement('a');name.textContent=g.name;if(/^https?:\/\//.test(g.url)){name.href=g.url;name.target='_blank';name.rel='noopener noreferrer';}const price=document.createElement('span');price.textContent=known(g)?money(g.price):'Price TBD';info.append(name,price);const remove=document.createElement('button');remove.textContent='Remove';remove.setAttribute('aria-label','Remove '+g.name+' from cart');remove.onclick=()=>{selected.delete(original.id);render();};row.append(info,remove);items.append(row);
   }
   if(!selected.size){const p=document.createElement('p');p.textContent='Your cart is empty. Add a gift from the list.';items.append(p);}
   dialog.querySelector('.cart-footer strong').textContent='Total '+money(subtotal);
@@ -26,8 +26,9 @@ function initCart(gifts){
  for(const id of selected)if(!gifts.some(g=>g.id===id))selected.delete(id);
  document.querySelectorAll('#gift-grid .card').forEach(card=>{const g=gifts.find(g=>g.id===card.dataset.giftId);if(!g)return;card.querySelector('.cart-add')?.remove();const b=document.createElement('button');b.type='button';b.className='cart-add';b.onclick=()=>{selected.has(g.id)?selected.delete(g.id):selected.add(g.id);render();};card.querySelector('.body').append(b);buttons.set(g.id,b);});
  total.textContent=money(gifts.reduce((n,g)=>n+(known(g)?g.price:0),0))+' total';
- summary.querySelector('small')?.remove();if(gifts.some(g=>!known(g))){const note=document.createElement('small');note.textContent='Excludes gifts with prices TBD';summary.append(note);}
+ summary.querySelectorAll('small').forEach(n=>n.remove());if(gifts.some(g=>g.options?.length)){const note=document.createElement('small');note.textContent='First choices only · alternatives excluded';summary.append(note);}if(gifts.some(g=>!known(g))){const note=document.createElement('small');note.textContent='Excludes gifts with prices TBD';summary.append(note);}
  render();
  }
+ document.addEventListener('wishlist-option-change',render);
  open.onclick=()=>dialog.showModal();dialog.querySelector('.cart-heading button').onclick=()=>dialog.close();dialog.querySelector('.cart-footer button').onclick=()=>{selected.clear();render();};dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});attach(gifts);return {update:attach};
 }
