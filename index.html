@@ -103,7 +103,7 @@ function initCart(gifts){
  document.querySelectorAll('[data-sort]').forEach(b=>b.addEventListener('click',()=>{sort=b.dataset.sort;document.getElementById('sort-label').textContent=b.textContent;sortMenu.open=false;apply();}));
  reset.addEventListener('click',()=>{category='All';price='all';sort='rating';document.getElementById('price-label').textContent='Any price';document.getElementById('sort-label').textContent='Highest rated';priceMenu.open=false;sortMenu.open=false;apply();});
  document.addEventListener('click',e=>{if(!priceMenu.contains(e.target))priceMenu.open=false;if(!sortMenu.contains(e.target))sortMenu.open=false;});document.addEventListener('keydown',e=>{if(e.key==='Escape'){priceMenu.open=false;sortMenu.open=false;}});
- window.addEventListener('focus',refresh);window.addEventListener('pageshow',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});setInterval(()=>{if(!document.hidden)refresh();},15000);
+ document.addEventListener('wishlist-editor-refresh',refresh);window.addEventListener('focus',refresh);window.addEventListener('pageshow',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});setInterval(()=>{if(!document.hidden)refresh();},15000);
  apply();await refresh();
 })();
-</script></body></html>
+</script><script type="module" src="./inline-editor.js?v=1"></script></body></html>
